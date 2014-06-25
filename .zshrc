@@ -330,4 +330,25 @@ fi
 #vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
+function sshM {
+    ssh $1 -M -S ~/.ssh/%r_%h_%p
+}
+
+function sshS {
+    ssh $1 -S ~/.ssh/%r_%h_%p
+}
+
+alias mount_SARA2='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/SARA2 /SARA2'
+alias mount_int1='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int1 /int1'
+alias mount_int2='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int2 /int2'
+alias mount_home_sro='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/home/a127590 ~/home_sro'
+
+
+[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
+[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ssh-add .ssh/id_rsa
+[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
+[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || ssh-add .ssh/id_svn
+[[ -n $(ssh-add -l | grep "Public Key") ]] && echo "IDENTITY SSH Key already added"
+[[ -n $(ssh-add -l | grep "Public Key") ]] || ssh-add .ssh/identity
+
 ## END OF FILE #################################################################
