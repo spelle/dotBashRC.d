@@ -352,7 +352,8 @@ alias umount_home_sro='fusermount -u ~/home_sro'
 alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2 '
 
 
-if [[ "changri" == $(uname -n) ]] ; then
+if [[ "chakung" == $(uname -n) ]]
+then
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ssh-add .ssh/id_rsa
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
@@ -373,21 +374,22 @@ if [[ "changri" == $(uname -n) ]] ; then
 		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
 		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] || mount_home_sro
 	fi
+
+	if [[ -f /var/run/user/$(id -u)/sshfs_mounted ]]
+	then
+		echo " OK. All Done."
+	else
+
+		echo ""
+		echo "#################################################################"
+		echo ""
+		echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
+		echo ""
+		echo "#################################################################"
+
+		touch /var/run/user/$(id -u)/sshfs_mounted
+	fi
 fi
 
-if [[ -f /var/run/user/$(id -u)/sshfs_mounted ]]
-then
-	echo " OK. All Done."
-else
-
-	echo ""
-	echo "#################################################################"
-	echo ""
-	echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
-	echo ""
-	echo "#################################################################"
-
-	touch /var/run/user/$(id -u)/sshfs_mounted
-fi
 
 ## END OF FILE #################################################################
