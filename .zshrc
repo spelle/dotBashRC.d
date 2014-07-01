@@ -338,6 +338,8 @@ function sshS {
     ssh $1 -S ~/.ssh/%r_%h_%p
 }
 
+alias md='mkdir'
+
 alias mount_SARA2='sshfs -o ssh_command="ssh -M -S ~/.ssh/%r_%h_%p" td0sro02b:/SARA2 /SARA2'
 alias mount_int1='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int1 /int1'
 alias mount_int2='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int2 /int2'
@@ -368,6 +370,21 @@ if [[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] ; then
 	
 	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
 	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] || mount_home_sro
+fi
+
+if [[ -f /var/run/user/$(id -u)/sshfs_mounted ]]
+then
+	echo " OK. All Done."
+else
+
+	echo ""
+	echo "#################################################################"
+	echo ""
+	echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
+	echo ""
+	echo "#################################################################"
+
+	touch /var/run/user/$(id -u)/sshfs_mounted
 fi
 
 ## END OF FILE #################################################################
