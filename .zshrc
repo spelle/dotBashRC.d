@@ -331,19 +331,19 @@ fi
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
 function sshM {
-    ssh $1 -M -S ~/.ssh/%r_%h_%p
+    ssh -A $1 -M -S ~/.ssh/%r_%h_%p
 }
 
 function sshS {
-    ssh $1 -S ~/.ssh/%r_%h_%p
+    ssh -A $1 -S ~/.ssh/%r_%h_%p
 }
 
 alias md='mkdir'
 
-alias mount_SARA2='sshfs -o ssh_command="ssh -M -S ~/.ssh/%r_%h_%p" td0sro02b:/SARA2 /SARA2'
-alias mount_int1='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int1 /int1'
-alias mount_int2='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/int2 /int2'
-alias mount_home_sro='sshfs -o ssh_command="ssh -S ~/.ssh/%r_%h_%p" td0sro02b:/home/a127590 ~/home_sro'
+alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/SARA2 /SARA2'
+alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
+alias mount_int2='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int2 /int2'
+alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/home/a127590 ~/home_sro'
 
 alias umount_SARA2='fusermount -u /SARA2'
 alias umount_int1='fusermount -u /int1'
@@ -360,6 +360,8 @@ then
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || ssh-add .ssh/id_svn
 	[[ -n $(ssh-add -l | grep "Public Key") ]] && echo "IDENTITY SSH Key already added"
 	[[ -n $(ssh-add -l | grep "Public Key") ]] || ssh-add .ssh/identity
+
+	sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
 
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] && echo "td0sro02b:/SARA2 allready mounted on /SARA2"
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] || mount_SARA2
@@ -391,5 +393,11 @@ then
 	fi
 fi
 
+# GIT
+alias gl='git log --pretty=format:'\''%C(yellow)%h %Cred%ad %Cblue%an %Cgreen%d %Creset%s'\'' --oneline --abbrev-commit --all --graph --decorate --color'
+alias gc='git commit -m'
+alias gs='git status'
+alias ga='git add'
+alias gp='git push'
 
 ## END OF FILE #################################################################
