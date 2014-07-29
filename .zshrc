@@ -340,10 +340,10 @@ function sshS {
 
 alias md='mkdir'
 
-alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/SARA2 /SARA2'
+alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/SARA2 /SARA2'
 alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
 alias mount_int2='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int2 /int2'
-alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/home/a127590 ~/home_sro'
+alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/home/a127590 ~/home_sro'
 
 alias umount_SARA2='fusermount -u /SARA2'
 alias umount_int1='fusermount -u /int1'
@@ -361,12 +361,12 @@ then
 	[[ -n $(ssh-add -l | grep "Public Key") ]] && echo "IDENTITY SSH Key already added"
 	[[ -n $(ssh-add -l | grep "Public Key") ]] || ssh-add .ssh/identity
 
-	sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
+	[[ 0 == $(grep "search priv.atos.fr" /etc/resolv.conf | wc -l) ]] && sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
 
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] && echo "td0sro02b:/SARA2 allready mounted on /SARA2"
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] || mount_SARA2
 
-	if [[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] ; then
+#	if [[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] ; then
 		[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] && echo "td0sro02b:/int1 allready mounted on /int1"
 		[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] || mount_int1
 
@@ -374,23 +374,16 @@ then
 		[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] || mount_int2
 	
 		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
-		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] || mount_home_sro
-	fi
+		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/chakung/home_sro") ]] || mount_home_sro
+#
+#		echo ""
+#		echo "#################################################################"
+#		echo ""
+#		echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
+#		echo ""
+#		echo "#################################################################"
 
-	if [[ -f /var/run/user/$(id -u)/sshfs_mounted ]]
-	then
-		echo " OK. All Done."
-	else
-
-		echo ""
-		echo "#################################################################"
-		echo ""
-		echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
-		echo ""
-		echo "#################################################################"
-
-		touch /var/run/user/$(id -u)/sshfs_mounted
-	fi
+#		echo " OK. All Done."
 fi
 
 # GIT
