@@ -330,6 +330,9 @@ fi
 #vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
+
+alias md='mkdir'
+
 function sshM {
     ssh -A $1 -M -S ~/.ssh/%r_%h_%p
 }
@@ -338,7 +341,10 @@ function sshS {
     ssh -A $1 -S ~/.ssh/%r_%h_%p
 }
 
-alias md='mkdir'
+function mkcd {
+    mkdir $1
+    cd $1
+}
 
 alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/SARA2 /SARA2'
 alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
@@ -354,6 +360,19 @@ alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2 '
 
 if [[ "chakung" == $(uname -n) ]]
 then
+	function tti { # tti = ssh +1
+		bastion=gateway-fr
+		user=$(awk 'f;/Host $bastion/{f=1}' ~/.ssh/config | awk '/User/{ print $2 ; exit }' )
+		[[ -z $user ]] || user=$(whoami)
+
+		[[ -S ~/.ssh/${user}_${bastion} ]] || ssh -t -A gateway-fr -M -S ~/.ssh/${user}_${bastion} ssh $1
+		[[ -S ~/.ssh/${user}_${bastion} ]] && ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
+	}
+
+	function bastS {
+	    ssh -A $1 -S ~/.ssh/%r_%h_%p
+	}
+
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ssh-add .ssh/id_rsa
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
@@ -366,24 +385,14 @@ then
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] && echo "td0sro02b:/SARA2 allready mounted on /SARA2"
 	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] || mount_SARA2
 
-#	if [[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] ; then
-		[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] && echo "td0sro02b:/int1 allready mounted on /int1"
-		[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] || mount_int1
+	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] && echo "td0sro02b:/int1 allready mounted on /int1"
+	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] || mount_int1
 
-		[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] && echo "td0sro02b:/int2 allready mounted on /int2"
-		[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] || mount_int2
+	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] && echo "td0sro02b:/int2 allready mounted on /int2"
+	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] || mount_int2
 	
-		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
-		[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/chakung/home_sro") ]] || mount_home_sro
-#
-#		echo ""
-#		echo "#################################################################"
-#		echo ""
-#		echo " DO NOT Open AN SSH CONNEXION TO td0sro02b with this terminal"
-#		echo ""
-#		echo "#################################################################"
-
-#		echo " OK. All Done."
+	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
+	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/chakung/home_sro") ]] || mount_home_sro
 fi
 
 # GIT
@@ -392,5 +401,39 @@ alias gc='git commit -m'
 alias gs='git status'
 alias ga='git add'
 alias gp='git push'
+
+function pem2text {
+	openssl x509 -in $1 -noout -text 
+}
+
+function pem_verify {
+	openssl verify -CAfile $1 $2
+}
+
+function pem_get_OU {
+	openssl x509 -noout -subject -in $1 | awk -F'/' '{print $3}' | awk -F'=' '{print $2}'
+}
+
+function pem_get_CN {
+	openssl x509 -noout -subject -in $1 | awk -F'/' '{print $2}' | awk -F'=' '{print $2}'
+}
+
+function pem_get_EndDate {
+	openssl x509 -noout -enddate -in $1 | awk -F '=' '{print $2}'
+}
+
+function pem_NormalizeName {
+	varOU=$(pem_get_OU $1)
+	varCN=$(pem_get_CN $1)
+	varEndDate=$(date -d "$(pem_get_EndDate $1)" +%Y-%m-%d)
+
+	mv $1 $varOU.$varCN.$varEndDate.pem
+}
+
+alias tun='ssh -A -L localhost:53522:ysrmmp01s:22 -L localhost:53523:tqerdp39v:22 gateway-fr -M -S ~/.ssh/%r_%h_%p_tun'
+
+
+export PATH="$HOME/.linuxbrew/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.linuxbrew/lib:$LD_LIBRARY_PATH"
 
 ## END OF FILE #################################################################
