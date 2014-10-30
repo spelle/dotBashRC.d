@@ -333,6 +333,12 @@ fi
 
 alias md='mkdir'
 
+function tti { # tti = ssh +1
+	host=$1
+	[[ -S ~/.ssh/.${host} ]] || ssh -M -S ~/.ssh/.${host} $host
+	[[ -S ~/.ssh/.${host} ]] && ssh -S ~/.ssh/.${host} $host
+}
+
 function sshM {
     ssh -A $1 -M -S ~/.ssh/%r_%h_%p
 }
@@ -360,7 +366,7 @@ alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2 '
 
 if [[ "chakung" == $(uname -n) ]]
 then
-	function tti { # tti = ssh +1
+	function bast { # tti = ssh +1
 		bastion=gateway-fr
 		user=$(awk 'f;/Host $bastion/{f=1}' ~/.ssh/config | awk '/User/{ print $2 ; exit }' )
 		[[ -z $user ]] || user=$(whoami)
@@ -373,6 +379,18 @@ then
 	    ssh -A $1 -S ~/.ssh/%r_%h_%p
 	}
 
+	alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/SARA2 /SARA2'
+	alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
+	alias mount_int2='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int2 /int2'
+	alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/home/a127590 ~/home_sro'
+	alias mount_all='mount_home_sro ; mount_int2 ; mount_int1 ; mount_SARA2'
+
+	alias umount_SARA2='fusermount -u /SARA2'
+	alias umount_int1='fusermount -u /int1'
+	alias umount_int2='fusermount -u /int2'
+	alias umount_home_sro='fusermount -u ~/home_sro'
+	alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2'
+
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ssh-add .ssh/id_rsa
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
@@ -382,17 +400,17 @@ then
 
 	[[ 0 == $(grep "search priv.atos.fr" /etc/resolv.conf | wc -l) ]] && sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
 
-	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] && echo "td0sro02b:/SARA2 allready mounted on /SARA2"
-	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] || mount_SARA2
+#	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] && echo "td0sro02b:/SARA2 allready mounted on /SARA2"
+#	[[ -n $( mount | grep "td0sro02b:/SARA2 on /SARA2") ]] || mount_SARA2
 
-	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] && echo "td0sro02b:/int1 allready mounted on /int1"
-	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] || mount_int1
+#	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] && echo "td0sro02b:/int1 allready mounted on /int1"
+#	[[ -n $( mount | grep "td0sro02b:/int1 on /int1") ]] || mount_int1
 
-	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] && echo "td0sro02b:/int2 allready mounted on /int2"
-	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] || mount_int2
+#	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] && echo "td0sro02b:/int2 allready mounted on /int2"
+#	[[ -n $( mount | grep "td0sro02b:/int2 on /int2") ]] || mount_int2
 	
-	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
-	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/chakung/home_sro") ]] || mount_home_sro
+#	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/a127590/home_sro") ]] && echo "td0sro02b:/home/a127590 allready mounted on /home/a127590/home_sro"
+#	[[ -n $( mount | grep "td0sro02b:/home/a127590 on /home/chakung/home_sro") ]] || mount_home_sro
 fi
 
 # GIT
