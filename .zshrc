@@ -339,6 +339,10 @@ function tti { # tti = ssh +1
 	[[ -S ~/.ssh/.${host} ]] && ssh -S ~/.ssh/.${host} $host
 }
 
+function awl_pw_connect {
+	
+}
+
 function sshM {
     ssh -A $1 -M -S ~/.ssh/%r_%h_%p
 }
@@ -364,15 +368,15 @@ alias umount_home_sro='fusermount -u ~/home_sro'
 alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2 '
 
 
-if [[ "chakung" == $(uname -n) ]]
+if [[ "EFR00575-VM" == $(uname -n) ]]
 then
 	function bast { # tti = ssh +1
 		bastion=gateway-fr
 		user=$(awk 'f;/Host $bastion/{f=1}' ~/.ssh/config | awk '/User/{ print $2 ; exit }' )
 		[[ -z $user ]] || user=$(whoami)
 
-		[[ -S ~/.ssh/${user}_${bastion} ]] || ssh -t -A gateway-fr -M -S ~/.ssh/${user}_${bastion} ssh $1
-		[[ -S ~/.ssh/${user}_${bastion} ]] && ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
+		[[ -S ~/.ssh/${user}_${bastion} ]] || sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -M -S ~/.ssh/${user}_${bastion} ssh $1
+		[[ -S ~/.ssh/${user}_${bastion} ]] && sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
 	}
 
 	function bastS {
@@ -392,11 +396,11 @@ then
 	alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2'
 
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
-	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ssh-add .ssh/id_rsa
+	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/id_rsa
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
-	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || ssh-add .ssh/id_svn
+	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/id_svn
 	[[ -n $(ssh-add -l | grep "Public Key") ]] && echo "IDENTITY SSH Key already added"
-	[[ -n $(ssh-add -l | grep "Public Key") ]] || ssh-add .ssh/identity
+	[[ -n $(ssh-add -l | grep "Public Key") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/identity
 
 	[[ 0 == $(grep "search priv.atos.fr" /etc/resolv.conf | wc -l) ]] && sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
 

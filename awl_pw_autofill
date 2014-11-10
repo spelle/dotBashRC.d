@@ -1,0 +1,5 @@
+#!/usr/bin/expect -f
+spawn "$argv1"
+expect "password:"
+send "W0rldl!n3Suck5\r"
+interact
