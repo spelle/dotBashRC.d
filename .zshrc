@@ -379,6 +379,12 @@ then
 		[[ -S ~/.ssh/${user}_${bastion} ]] && sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
 	}
 
+	function kazan_push {
+		
+		~/.zsh/awl_kazan_push_autofill	$(who am i | awk '{ print $1 }') $(cat ~/.ssh/awl_pw)
+	
+	}
+
 	function bastS {
 	    ssh -A $1 -S ~/.ssh/%r_%h_%p
 	}
@@ -396,11 +402,11 @@ then
 	alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2'
 
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
-	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/id_rsa
+	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] || ~/.zsh/awl_pssphrs_autofill $(cat ~/.ssh/awl_pssphrs) ~/.ssh/id_rsa
 	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] && echo "IDSVN SSH Key already added"
-	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/id_svn
+	[[ -n $(ssh-add -l | grep ".ssh/id_svn") ]] || ~/.zsh/awl_pssphrs_autofill $(cat ~/.ssh/awl_pssphrs) ~/.ssh/id_svn
 	[[ -n $(ssh-add -l | grep "Public Key") ]] && echo "IDENTITY SSH Key already added"
-	[[ -n $(ssh-add -l | grep "Public Key") ]] || .zsh/awl_pssphrs_autofill $(cat .ssh/awl_pssphrs) .ssh/identity
+	[[ -n $(ssh-add -l | grep "Public Key") ]] || ~/.zsh/awl_pssphrs_autofill $(cat ~/.ssh/awl_pssphrs) ~/.ssh/identity
 
 	[[ 0 == $(grep "search priv.atos.fr" /etc/resolv.conf | wc -l) ]] && sudo su -c 'echo "search priv.atos.fr" >> /etc/resolv.conf'
 
@@ -445,8 +451,8 @@ function pem_get_EndDate {
 }
 
 function pem_NormalizeName {
-	varOU=$(pem_get_OU $1)
-	varCN=$(pem_get_CN $1)
+	varOU=$( echo $(pem_get_OU $1) | sed "s/ /_/" )
+	varCN=$( echo $(pem_get_CN $1) | sed "s/ /_/" )
 	varEndDate=$(date -d "$(pem_get_EndDate $1)" +%Y-%m-%d)
 
 	mv $1 $varOU.$varCN.$varEndDate.pem
