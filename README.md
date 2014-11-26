@@ -12,6 +12,7 @@ INSTALL
 	git clone https://github.com/spelle/dotZSH .zsh
 
 	cat << EOF >> .zshrc 
+	
 	for f in ~/.zsh/*.sh ; do source $f ; done
 	EOF
 
