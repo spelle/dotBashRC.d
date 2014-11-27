@@ -9,13 +9,10 @@ then
 		#[[ -S ~/.ssh/${user}_${bastion} ]] && sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
 		[[ 0 == $# ]] && sshpass -f ~/.ssh/awl_pw ssh ${bastion}
 		[[ 1 == $# ]] && sshpass -f ~/.ssh/awl_pw ssh -t ${bastion} ssh $1
-
 	}
 
 	function kazan_push {
-		
 		~/.zsh/awl_kazan_push_autofill	$(who am i | awk '{ print $1 }') $(cat ~/.ssh/awl_pw)
-	
 	}
 
 	alias mount_SARA2='sshfs td0sro02b:/SARA2 ~/mnt/td0sro02b/SARA2'
