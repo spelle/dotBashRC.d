@@ -1,5 +1,8 @@
 #!/usr/bin/sh
 
+# OpenSSL Functions
+#-------------------
+
 function pem2text {
 	openssl x509 -in $1 -noout -text 
 }

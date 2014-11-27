@@ -1,3 +1,7 @@
+#!/bin/sh
+
+# SSH Functions
+#---------------
 
 function tti { # tti = ssh +1
 	host=$1
