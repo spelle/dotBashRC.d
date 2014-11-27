@@ -1,0 +1,19 @@
+<<<<<<< HEAD
+# GIT
+alias gl='git log --pretty=format:'\''%C(yellow)%h %Cred%ad %Cblue%an %Cgreen%d %Creset%s'\'' --oneline --abbrev-commit --all --graph --decorate --color'
+alias gc='git commit -m'
+alias gs='git status'
+alias ga='git add'
+alias gp='git push'
+=======
+#!/bin/sh
+
+# GIT
+alias glg='git log --pretty=format:'\''%C(yellow)%h %Cred%ad %Cblue%an %Cgreen%d %Creset%s'\'' --oneline --abbrev-commit --all --graph --decorate --color'
+alias gct='git commit -m'
+alias gst='git status'
+alias gad='git add'
+alias gps='git push'
+alias gpl='git pull'
+
+>>>>>>> dcf4222a1dd0b4c74c5548a885ba36ee5472fa30
