@@ -356,27 +356,18 @@ function mkcd {
     cd $1
 }
 
-alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/SARA2 /SARA2'
-alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
-alias mount_int2='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int2 /int2'
-alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/home/a127590 ~/home_sro'
-
-alias umount_SARA2='fusermount -u /SARA2'
-alias umount_int1='fusermount -u /int1'
-alias umount_int2='fusermount -u /int2'
-alias umount_home_sro='fusermount -u ~/home_sro'
-alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2 '
-
-
 if [[ "EFR00575-VM" == $(uname -n) ]]
 then
-	function bast { # tti = ssh +1
+	function bast {
 		bastion=gateway-fr
-		user=$(awk 'f;/Host $bastion/{f=1}' ~/.ssh/config | awk '/User/{ print $2 ; exit }' )
-		[[ -z $user ]] || user=$(whoami)
+		# user=$(awk 'f;/Host $bastion/{f=1}' ~/.ssh/config | awk '/User/{ print $2 ; exit }' )
+		#[[ -z $user ]] || user=$(whoami)
 
-		[[ -S ~/.ssh/${user}_${bastion} ]] || sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -M -S ~/.ssh/${user}_${bastion} ssh $1
-		[[ -S ~/.ssh/${user}_${bastion} ]] && sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
+		#[[ -S ~/.ssh/${user}_${bastion} ]] || sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -M -S ~/.ssh/${user}_${bastion} ssh $1
+		#[[ -S ~/.ssh/${user}_${bastion} ]] && sshpass -p $(cat ~/.ssh/awl_pw) ssh -t -A gateway-fr -S ~/.ssh/${user}_${bastion} ssh $1
+		[[ 0 == $# ]] && sshpass -f ~/.ssh/awl_pw ssh ${bastion}
+		[[ 1 == $# ]] && sshpass -f ~/.ssh/awl_pw ssh -t ${bastion} ssh $1
+
 	}
 
 	function kazan_push {
@@ -389,16 +380,16 @@ then
 	    ssh -A $1 -S ~/.ssh/%r_%h_%p
 	}
 
-	alias mount_SARA2='sshfs -o ssh_command="ssh -A -M -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/SARA2 /SARA2'
-	alias mount_int1='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int1 /int1'
-	alias mount_int2='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" td0sro02b:/int2 /int2'
-	alias mount_home_sro='sshfs -o ssh_command="ssh -A -S ~/.ssh/%r_%h_%p_sshfs" -o gid=200 td0sro02b:/home/a127590 ~/home_sro'
+	alias mount_SARA2='sshfs td0sro02b:/SARA2 ~/mnt/td0sro02b/SARA2'
+	alias mount_int1='sshfs td0sro02b:/int1 ~/mnt/td0sro02b/int1'
+	alias mount_int2='sshfs td0sro02b:/int2 ~/mnt/td0sro02b/int2'
+	alias mount_home_sro='sshfs td0sro02b:/home/a127590 ~/mnt/td0sro02b/a127590'
 	alias mount_all='mount_home_sro ; mount_int2 ; mount_int1 ; mount_SARA2'
 
-	alias umount_SARA2='fusermount -u /SARA2'
-	alias umount_int1='fusermount -u /int1'
-	alias umount_int2='fusermount -u /int2'
-	alias umount_home_sro='fusermount -u ~/home_sro'
+	alias umount_SARA2='fusermount -u ~/mnt/td0sro02b/SARA2'
+	alias umount_int1='fusermount -u ~/mnt/td0sro02b/int1'
+	alias umount_int2='fusermount -u ~/mnt/td0sro02b/int2'
+	alias umount_home_sro='fusermount -u ~/mnt/td0so02b/a127590'
 	alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2'
 
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
