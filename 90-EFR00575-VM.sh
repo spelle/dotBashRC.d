@@ -15,6 +15,41 @@ then
 		~/.zsh/awl_kazan_push_autofill	$(who am i | awk '{ print $1 }') $(cat ~/.ssh/awl_pw)
 	}
 
+	function awl_pw_cmd_autofill {
+		awl_password=$1
+		shift
+		awl_command=$@
+
+		expect -c "  
+		   set timeout 1
+		   spawn sh -c \"$awl_command\"
+		   expect yes/no { send yes\r ; exp_continue }
+		   expect *assword: { send \"$awl_password\r\" }
+		   expect 100%
+		   sleep 1
+		   exit
+		"  
+	}
+
+	function awl_pw_user_cmd_autofill {
+		awl_password=$1
+		shift
+		awl_username=$1
+		shift
+		awl_command=$@
+
+		expect -c "  
+		   set timeout 1
+		   spawn sh -c \"$awl_command\"
+		   expect *sername* { send \"$awl_username\r\" }
+		   expect yes/no { send yes\r ; exp_continue }
+		   expect *assword* { send \"$awl_password\r\" }
+		   expect 100%
+		   sleep 1
+		   exit
+		"  
+	}
+
 	alias mount_SARA2='sshfs td0sro02b:/SARA2 ~/mnt/td0sro02b/SARA2'
 	alias mount_int1='sshfs td0sro02b:/int1 ~/mnt/td0sro02b/int1'
 	alias mount_int2='sshfs td0sro02b:/int2 ~/mnt/td0sro02b/int2'
@@ -24,7 +59,7 @@ then
 	alias umount_SARA2='fusermount -u ~/mnt/td0sro02b/SARA2'
 	alias umount_int1='fusermount -u ~/mnt/td0sro02b/int1'
 	alias umount_int2='fusermount -u ~/mnt/td0sro02b/int2'
-	alias umount_home_sro='fusermount -u ~/mnt/td0so02b/a127590'
+	alias umount_home_sro='fusermount -u ~/mnt/td0sro02b/a127590'
 	alias umount_all='umount_home_sro ; umount_int2 ; umount_int1 ; umount_SARA2'
 
 	[[ -n $(ssh-add -l | grep ".ssh/id_rsa") ]] && echo "IDRSA SSH Key already added"
