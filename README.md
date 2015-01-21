@@ -9,7 +9,7 @@ INSTALL
 	curl -L http://install.ohmyz.sh | sh
 	sed -i "/robbyrussel/gianu/" .zshrc
 
-	git clone https://github.com/spelle/dotZSH .bashrc.d
+	git clone https://github.com/spelle/dotBashRC.d .bashrc.d
 
 	cat << EOF >> .zshrc 
 	
