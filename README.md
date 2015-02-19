@@ -1,4 +1,4 @@
-dotZSH
+dotBashRC.d
 ======
 
 INSTALL
