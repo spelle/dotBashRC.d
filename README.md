@@ -4,14 +4,13 @@ dotZSH
 INSTALL
 -------
 
-	sudo apt-get install curl
+	curl -L https://raw.githubusercontent.com/spelle/dotBashRC.d/master/K00-Install.sh | sh
 
-	curl -L http://install.ohmyz.sh | sh
-	sed -i "/robbyrussel/gianu/" .zshrc
+or
 
 	git clone https://github.com/spelle/dotBashRC.d .bashrc.d
 
-	cat << EOF >> .zshrc 
+	cat << EOF >> .bashrc 
 	
 	for f in ~/.bashrc.d/*.sh ; do source \$f ; done
 	EOF
